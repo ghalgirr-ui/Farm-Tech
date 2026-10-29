@@ -2,30 +2,45 @@ const mongoose = require("mongoose");
 
 const productSchema = new mongoose.Schema(
   {
-    sellerId: {
+    seller: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: "User"
+      ref: "User",
+      required: true,
+      index: true
     },
     title: {
       type: String,
       required: true,
-      trim: true
+      trim: true,
+      minlength: 2
+    },
+    description: {
+      type: String,
+      required: true,
+      trim: true,
+      minlength: 10
     },
     category: {
       type: String,
       required: true,
       enum: [
-        "Agricultural Produce",
+        "Seeds",
+        "Fertilizers",
+        "Pesticides",
+        "Tools",
         "Machinery",
         "Equipment",
-        "Seeds",
-        "Farming Tools",
+        "Crops",
+        "Vegetables",
+        "Fruits",
+        "Grains",
         "Other"
       ]
     },
-    description: {
+    type: {
       type: String,
-      trim: true
+      enum: ["SALE", "RENT", "BID"],
+      default: "SALE"
     },
     price: {
       type: Number,
@@ -34,18 +49,25 @@ const productSchema = new mongoose.Schema(
     },
     quantity: {
       type: Number,
-      min: 0
+      required: true,
+      min: 0,
+      default: 1
     },
-    type: {
+    unit: {
       type: String,
-      enum: ["SALE", "RENT", "BID"],
-      default: "SALE"
+      required: true,
+      trim: true,
+      default: "kg"
     },
     location: {
       type: String,
+      required: true,
       trim: true
     },
-    images: [String],
+    images: {
+      type: [String],
+      default: []
+    },
     status: {
       type: String,
       enum: ["ACTIVE", "SOLD", "RENTED", "CLOSED"],

@@ -1,43 +1,82 @@
-import { useEffect, useState } from "react";
-
-const API_URL = "http://localhost:5000/api";
+import { Route, Routes } from "react-router-dom";
+import AppShell from "./components/layout/AppShell";
+import ProtectedRoute from "./components/common/ProtectedRoute";
+import { AuthProvider } from "./context/AuthContext";
+import HomePage from "./pages/HomePage";
+import LoginPage from "./pages/LoginPage";
+import RegisterPage from "./pages/RegisterPage";
+import MarketplacePage from "./pages/MarketplacePage";
+import ProductDetailsPage from "./pages/ProductDetailsPage";
+import SellProductPage from "./pages/SellProductPage";
+import DashboardPage from "./pages/DashboardPage";
+import ProfilePage from "./pages/ProfilePage";
+import OrdersPage from "./pages/OrdersPage";
+import MyListingsPage from "./pages/MyListingsPage";
+import EditListingPage from "./pages/EditListingPage";
+import NotFoundPage from "./pages/NotFoundPage";
 
 function App() {
-  const [status, setStatus] = useState("Checking backend...");
-
-  useEffect(() => {
-    fetch(`${API_URL}/health`)
-      .then((response) => response.json())
-      .then((data) => setStatus(data.message))
-      .catch(() => setStatus("Backend is not connected yet."));
-  }, []);
-
   return (
-    <main className="app">
-      <nav className="navbar">
-        <div className="brand">🌾 FARM-TECH</div>
-        <div className="nav-links">
-          <span>Marketplace</span>
-          <span>AI Assistant</span>
-          <span>Profile</span>
-        </div>
-      </nav>
-
-      <section className="hero">
-        <p className="eyebrow">SMART FARMER PLATFORM</p>
-        <h1>Connect. Farm. Trade. Grow.</h1>
-        <p>
-          FARM-TECH brings agricultural resources and AI-powered farming
-          guidance together in one platform.
-        </p>
-        <button>Explore Marketplace</button>
-      </section>
-
-      <section className="status-card">
-        <strong>Development status</strong>
-        <p>{status}</p>
-      </section>
-    </main>
+    <AuthProvider>
+      <AppShell>
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/login" element={<LoginPage />} />
+          <Route path="/register" element={<RegisterPage />} />
+          <Route path="/marketplace" element={<MarketplacePage />} />
+          <Route path="/marketplace/:id" element={<ProductDetailsPage />} />
+          <Route
+            path="/sell"
+            element={
+              <ProtectedRoute>
+                <SellProductPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-listings"
+            element={
+              <ProtectedRoute>
+                <MyListingsPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-listings/:id/edit"
+            element={
+              <ProtectedRoute>
+                <EditListingPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/dashboard"
+            element={
+              <ProtectedRoute>
+                <DashboardPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/profile"
+            element={
+              <ProtectedRoute>
+                <ProfilePage />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/orders"
+            element={
+              <ProtectedRoute>
+                <OrdersPage />
+              </ProtectedRoute>
+            }
+          />
+          <Route path="*" element={<NotFoundPage />} />
+        </Routes>
+      </AppShell>
+    </AuthProvider>
   );
 }
 
